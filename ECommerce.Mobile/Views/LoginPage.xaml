@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ECommerce.Mobile.Views.LoginPage"
+             Title="Connexion">
+    <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
+        <!-- Titre -->
+        <Label 
+            Text="ECormmerce"
+            FontSize="32"
+            FontAttributes="Bold"
+            TextColor="#333"
+            HorizontalOptions="Center" />
+        <Label 
+            Text="Connectez vous à votre compte"
+            FontSize="14"
+            HorizontalOptions="Center"
+            TextColor="#888"
+            />
+        <!--Email-->
+        <Entry 
+            x:Name="EmailEntry"
+            Placeholder="Email"
+            Keyboard="Email"
+            BackgroundColor="White"
+            TextColor="#333"
+            />
+        <!--Mot de passe-->
+        <Entry 
+            x:Name="PasswordEntry"
+            Placeholder="Mot de passe"
+            IsPassword="True"
+            BackgroundColor="White"
+            TextColor="#333"
+            />
+        <!--Message d'erreur-->
+        <Label 
+            x:Name="ErrorLabel"
+            TextColor="Red"
+            IsVisible="False"
+            HorizontalOptions="Center" />
+        <!--Bouton login-->
+        <Button 
+            x:Name="LoginButton"
+            Text="Se Connecter"
+            BackgroundColor="#007AFF"
+            TextColor="White"
+            CornerRadius="8"
+            Clicked="OnLoginClicked"
+            />
+        <!--Lien vers register-->
+        <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
+            <Label
+                Text="Pas encore de compte?"
+                TextColor="#888"
+                VerticalOptions="Center" />
+            <Label
+                Text="S'inscrire"
+                TextColor="#007AFF"
+                VerticalOptions="Center"
+                FontAttributes="Bold">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnRegisterTapped" />
+                </Label.GestureRecognizers>
+            </Label>
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>

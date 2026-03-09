@@ -29,6 +29,7 @@ namespace ECommerce.Mobile
             builder.Services.AddSingleton<AuthService>();
             builder.Services.AddSingleton<ProductService>();
             builder.Services.AddTransient<AdminProductsPage>();
+            builder.Services.AddScoped<UserService>();
 
             return builder.Build();
         }

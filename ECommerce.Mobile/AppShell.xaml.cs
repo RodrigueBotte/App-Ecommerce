@@ -8,6 +8,7 @@ namespace ECommerce.Mobile
         {
             InitializeComponent();
             Routing.RegisterRoute(nameof(ProductsPage), typeof(ProductsPage));
+            Routing.RegisterRoute("login", typeof(LoginPage));
         }
     }
 }

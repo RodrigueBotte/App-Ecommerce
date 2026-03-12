@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ECommerce.Mobile.Views.ProfilePage"
+             Title="Mon Profil"
+             BackgroundColor="#F5F5F5">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="0">
+
+            <!-- HEADER -->
+            <Grid BackgroundColor="#3F51B5"
+                  Padding="24,40,24,30">
+                <VerticalStackLayout HorizontalOptions="Center"
+                                     Spacing="8">
+
+                    <!-- Avatar placeholder -->
+                    <Frame WidthRequest="80"
+                           HeightRequest="80"
+                           CornerRadius="40"
+                           BackgroundColor="#5C6BC0"
+                           BorderColor="#7986CB"
+                           HorizontalOptions="Center"
+                           Padding="0">
+                        <Label Text="👤"
+                               FontSize="36"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+                    </Frame>
+
+                    <Label Text="Mon Compte"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           HorizontalOptions="Center"/>
+
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- CARTE INFOS -->
+            <Frame Margin="16,16,16,8"
+                   Padding="20"
+                   CornerRadius="12"
+                   BackgroundColor="White"
+                   BorderColor="#E0E0E0"
+                   HasShadow="True">
+                <VerticalStackLayout Spacing="12">
+
+                    <Label Text="INFORMATIONS"
+                           FontSize="11"
+                           FontAttributes="Bold"
+                           TextColor="#9E9E9E"
+                           CharacterSpacing="1.5"/>
+
+                    <BoxView HeightRequest="1"
+                             BackgroundColor="#F0F0F0"/>
+
+                    <!-- Email -->
+                    <Grid ColumnDefinitions="Auto, *"
+                          ColumnSpacing="12">
+                        <Label Grid.Column="0"
+                               Text="📧"
+                               FontSize="18"
+                               VerticalOptions="Center"/>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="Adresse email"
+                                   FontSize="12"
+                                   TextColor="#9E9E9E"/>
+                            <Label x:Name="emailText"
+                                   FontSize="15"
+                                   FontAttributes="Bold"
+                                   TextColor="#212121"/>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- CARTE ACTIONS -->
+            <Frame Margin="16,8,16,8"
+                   Padding="20"
+                   CornerRadius="12"
+                   BackgroundColor="White"
+                   BorderColor="#E0E0E0"
+                   HasShadow="True">
+                <VerticalStackLayout Spacing="12">
+
+                    <Label Text="ACTIONS"
+                           FontSize="11"
+                           FontAttributes="Bold"
+                           TextColor="#9E9E9E"
+                           CharacterSpacing="1.5"/>
+
+                    <BoxView HeightRequest="1"
+                             BackgroundColor="#F0F0F0"/>
+
+                    <Button Text="Modifier mon profil"
+                            BackgroundColor="#3F51B5"
+                            TextColor="White"
+                            CornerRadius="8"
+                            FontAttributes="Bold"
+                            HeightRequest="48"
+                            Clicked="UpdateProfile"/>
+
+                    <Button Text="Se déconnecter"
+                            BackgroundColor="Transparent"
+                            TextColor="#F44336"
+                            BorderColor="#F44336"
+                            BorderWidth="1.5"
+                            CornerRadius="8"
+                            FontAttributes="Bold"
+                            HeightRequest="48"
+                            Clicked="Logout"/>
+
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

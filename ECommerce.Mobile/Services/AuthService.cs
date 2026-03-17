@@ -108,5 +108,13 @@ namespace ECommerce.Mobile.Services
             // Cherche un claim de type Role avec la valeur Admin
             return jwt.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == "Admin");
         }
+
+        public async Task LogoutAsync()
+        {
+            // Supprime le token JWT du SecureStorage
+            SecureStorage.Remove(TokenKey);
+            // on retourne une tâche complétée pour respecter la signature async
+            await Task.CompletedTask;
+        }
     }
 }

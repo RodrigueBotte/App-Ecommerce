@@ -35,57 +35,95 @@ public class ProductService
     // Get tous les produits depuis le backend
     public async Task<List<Product>> GetProductsAsync()
     {
-        string json = "";
-        try
-        {
-            json = await _httpClient.GetStringAsync("api/products");
+        var response = await _httpClient.GetAsync("api/products");
+        response.EnsureSuccessStatusCode();
 
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,  // name → Name
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase  // camelCase backend ?
-            };
+        var products = await response.Content.ReadFromJsonAsync<List<Product>>() ?? new List<Product>();
 
-            List<Product> products = JsonSerializer.Deserialize<List<Product>>(json, options) ?? [];
-            return products;
-        }
-        catch (Exception ex)
+        foreach (var product in products)
         {
-            System.Diagnostics.Debug.WriteLine($"JSON: {json}");  // ← Vois JSON brut !
-            System.Diagnostics.Debug.WriteLine($"Erreur: {ex}");
-            return [];
+            if (!string.IsNullOrEmpty(product.ImageUrl)) product.ImageUrl = $"https://localhost:7251{product.ImageUrl}";
         }
+        return products;
     }
 
     // Post un nouveau produit avec Admin uniquement
-    public async Task<bool> CreateProductAsync(ProductDto dto)
+    public async Task<bool> CreateProductAsync(ProductDto dto, FileResult? image = null)
     {
         try
         {
-            await SetAuthHeaderAsync(); // ← Assure que le token est présent
-            var response = await _httpClient.PostAsJsonAsync("api/products", dto);
+            await SetAuthHeaderAsync();
 
-            System.Diagnostics.Debug.WriteLine($"Status: {response.StatusCode}");
+            using var content = new MultipartFormDataContent(); // Permet d'envoyer à la fois des champs texte et un fichier (image)
 
-            var body = await response.Content.ReadAsStringAsync();
-            System.Diagnostics.Debug.WriteLine($"Body: {body}");
+            // Champs texte
+            content.Add(new StringContent(dto.Name), "name");
+            content.Add(new StringContent(dto.Description), "description");
+            content.Add(new StringContent(dto.Price.ToString(System.Globalization.CultureInfo.InvariantCulture)), "price"); // InvariantCulture pour éviter les problèmes de format (ex: 19.99 vs 19,99)
+            content.Add(new StringContent(dto.Stock.ToString()), "stock");
 
+            await Shell.Current.DisplayAlert("Debug Service",
+                $"Prix dans le dto: {dto.Price}\nPrix envoyé: {dto.Price.ToString(System.Globalization.CultureInfo.InvariantCulture)}",
+                "OK");
+
+            // Champs image(optionnel)
+            if (image != null)
+            {
+                var stream = await image.OpenReadAsync(); // Ouvre le flux de l'image
+                var imageContent = new StreamContent(stream); // Crée un StreamContent pour l'image
+                imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(image.ContentType ?? "image/jpeg"); // Fallback à image/jpeg si ContentType est null
+                content.Add(imageContent, "image", image.FileName); // "image" est le nom du champs attendu par le backend
+            }
+
+            var response = await _httpClient.PostAsync("api/products", content);
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                System.Diagnostics.Debug.WriteLine($"Status: {(int)response.StatusCode}");
+                System.Diagnostics.Debug.WriteLine($"Body: {error}");
+                await Shell.Current.DisplayAlert($"Erreur {(int)response.StatusCode}", error, "OK");
+            }
             return response.IsSuccessStatusCode;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Exception: {ex.Message}");
             return false;
         }
-        
     }
 
     // Put pour update un produit existant avec Admin uniquement
-    public async Task<bool> UpdateProductAsync(int id, ProductDto dto)
+    public async Task<bool> UpdateProductAsync(int id, ProductDto dto, FileResult? image = null)
     {
-        await SetAuthHeaderAsync();
-        var response = await _httpClient.PutAsJsonAsync($"api/products/{id}", dto);
-        return response.IsSuccessStatusCode;
+        try
+        {
+            await SetAuthHeaderAsync();
+
+            using var content = new MultipartFormDataContent();
+
+            content.Add(new StringContent(dto.Name), "name");
+            content.Add(new StringContent(dto.Description), "description");
+            content.Add(new StringContent(dto.Price.ToString(System.Globalization.CultureInfo.InvariantCulture)), "price");
+            content.Add(new StringContent(dto.Stock.ToString()), "stock");
+
+            if (image != null)
+            {
+                var stream = await image.OpenReadAsync();
+                var imageContent = new StreamContent(stream);
+                imageContent.Headers.ContentType =
+                    new System.Net.Http.Headers.MediaTypeHeaderValue(image.ContentType ?? "image/jpeg");
+
+                content.Add(imageContent, "image", image.FileName);
+            }
+
+            var response = await _httpClient.PutAsync($"api/products/{id}", content);
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Exception: {ex.Message}");
+            return false;
+        }
     }
 
     // Delete un produit avec Admin uniquement

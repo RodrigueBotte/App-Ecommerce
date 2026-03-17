@@ -9,10 +9,18 @@ namespace ECommerce.Mobile.Services
         private readonly HttpClient _httpClient;
         private readonly AuthService _authService;
 
-        public UserService(HttpClient httpClient, AuthService authService)
+        public UserService(AuthService authService)
         {
-            _httpClient = httpClient;
             _authService = authService;
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (m, c, ch, e) => true
+            };
+
+            _httpClient = new HttpClient(handler)
+            {
+                BaseAddress = new Uri("https://localhost:7251/"),
+            };
         }
 
         private async Task SetAuthHeaderAsync()
@@ -21,7 +29,7 @@ namespace ECommerce.Mobile.Services
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
-        public async Task<UserProfile> GetProfileAsync()
+        public async Task<UserProfile?> GetProfileAsync()
         {
             await SetAuthHeaderAsync();
             return await _httpClient.GetFromJsonAsync<UserProfile>("api/users/me");

@@ -47,4 +47,21 @@ public partial class ProductsPage : ContentPage
         var adminPage = Handler.MauiContext.Services.GetRequiredService<AdminProductsPage>();
         await Navigation.PushAsync(adminPage);
     }
+
+    // gestion du nombre d'élément affiché en fonction de la taille de l'écran
+    protected override void OnSizeAllocated(double width, double height)
+    {
+        base.OnSizeAllocated(width, height);
+
+        if (ProductsCollectionView.ItemsLayout is GridItemsLayout layout)
+        {
+            layout.Span = width switch
+            {
+                < 600 => 1,  // Mobile portrait
+                < 1000 => 2,  // Mobile paysage / petite tablette
+                _ => 3   // Tablette / Windows
+            };
+        }
+    }
+
 }

@@ -7,42 +7,54 @@
     <ScrollView>
         <VerticalStackLayout Spacing="20" Padding="20">
             <Button x:Name="RefreshButton" 
-                Text="Recharger" 
-                SemanticProperties.HeadingLevel="Level1"
-                Clicked="OnRefreshClicked" />
+                    Text="Recharger" 
+                    SemanticProperties.HeadingLevel="Level1"
+                    Clicked="OnRefreshClicked" />
             <Button x:Name="AdminButton" 
-                Text="Administration"
-                TextColor="White"
-                CornerRadius="8"
-                IsVisible="false"
-                Clicked="OnAdminTapped"/>
+                    Text="Administration"
+                    TextColor="White"
+                    CornerRadius="8"
+                    IsVisible="false"
+                    Clicked="OnAdminTapped"/>
 
             <CollectionView x:Name="ProductsCollectionView" HeightRequest="600">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Border Stroke="LightGray"
-                            StrokeThickness="1"
-                            BackgroundColor="White"
-                            StrokeShape="RoundRectangle 10"
-                            Padding="15"
-                            Margin="5">
-                            <Grid ColumnDefinitions="*,Auto" 
-                              RowDefinitions="Auto,Auto,Auto">
-                                <Label Grid.Row="0" Grid.ColumnSpan="2" 
-                                   Text="{Binding Name}" 
-                                   FontSize="20" 
-                                   FontAttributes="Bold"
-                                   TextColor="IndianRed"/>
-                                <Label Grid.Row="1" Text="{Binding Description}" 
-                                   FontSize="14" 
-                                   TextColor="Gray" />
-                                <Label Grid.Row="2" Grid.Column="1" 
-                                   Text="{Binding Price, StringFormat='{0} €'}" 
-                                   FontSize="22" 
-                                   FontAttributes="Bold"
-                                   TextColor="Gray"
-                                   HorizontalOptions="End" />
-                            </Grid>
+                                StrokeThickness="1"
+                                BackgroundColor="White"
+                                StrokeShape="RoundRectangle 10"
+                                Padding="15"
+                                Margin="5">
+                            <VerticalStackLayout Spacing="10">
+                                <Image HeightRequest="180"
+                                       WidthRequest="200"
+                                       BackgroundColor="AliceBlue"
+                                       Aspect="AspectFill"
+                                       Source="{Binding ImageUrl}" />
+                                <Grid 
+                                    ColumnDefinitions="*,Auto" 
+                                    RowDefinitions="Auto,Auto,Auto">
+                                    <Label Grid.Row="0" 
+                                           Grid.ColumnSpan="2" 
+                                           Text="{Binding Name}" 
+                                           FontSize="20" 
+                                           FontAttributes="Bold"
+                                           TextColor="IndianRed"/>
+                                    <Label Grid.Row="1" 
+                                           Text="{Binding Description}" 
+                                           FontSize="14" 
+                                           TextColor="Gray" />
+                                    <Label Grid.Row="2" 
+                                           Grid.Column="1" 
+                                           Text="{Binding Price, StringFormat='{0} €'}" 
+                                           FontSize="22" 
+                                           FontAttributes="Bold"
+                                           TextColor="Gray"
+                                           HorizontalOptions="End" />
+                                </Grid>
+                            </VerticalStackLayout>
+
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

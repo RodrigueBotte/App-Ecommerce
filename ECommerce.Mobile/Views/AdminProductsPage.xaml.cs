@@ -6,7 +6,8 @@ namespace ECommerce.Mobile.Views;
 public partial class AdminProductsPage : ContentPage
 {
 	private readonly ProductService _productService;
-	public AdminProductsPage(ProductService productService)
+	private FileResult? _pickedImage; // Stocke l'image sélectionnée temporairement
+    public AdminProductsPage(ProductService productService)
 	{
 		InitializeComponent();
 		_productService = productService;
@@ -26,6 +27,28 @@ public partial class AdminProductsPage : ContentPage
 		ProductsCollection.ItemsSource = products;
 	}
 
+	private async void OnPickImageClicked(object sender, EventArgs e)
+	{
+		// On ajoute l'affichage de tous les types de photos à la sélection des photos
+        var options = new PickOptions
+        {
+            FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+        {
+            { DevicePlatform.WinUI,   new[] { ".jpg", ".jpeg", ".png", ".webp" } },
+            { DevicePlatform.Android, new[] { "image/jpeg", "image/png", "image/webp" } },
+            { DevicePlatform.iOS,     new[] { "public.image" } },
+        })
+        };
+
+        var result = await FilePicker.PickAsync(options);
+        if (result is null) return;
+        _pickedImage = result;
+
+		//prévisualisation
+		ImagePreview.Source = ImageSource.FromFile(result.FullPath);
+		ImagePreview.IsVisible = true;
+	}
+
 	// Bounton "ajouter un produit"
 	private async void OnAddProductClicked(object sender, EventArgs e)
 	{
@@ -35,16 +58,20 @@ public partial class AdminProductsPage : ContentPage
             return;
         }
 
-		var dto = new ProductDto
+        var dto = new ProductDto
 		{
 			Name = NameEntry.Text.Trim(),
 			Description = DescriptionEntry.Text?.Trim() ?? string.Empty,
-			Price = decimal.TryParse(PriceEntry.Text, out var price) ? price : 0,
-			Stock = int.TryParse(StockEntry.Text, out var stock) ? stock : 0,
-			ImageUrl = ImageUrlEntry.Text?.Trim()
+            // Gère , ou . pour le prix
+            Price = decimal.TryParse(
+				PriceEntry.Text?.Replace(',', '.'),
+				System.Globalization.NumberStyles.Number,
+				System.Globalization.CultureInfo.InvariantCulture,
+				out var price) ? price : 0,
+            Stock = int.TryParse(StockEntry.Text, out var stock) ? stock : 0
 		};
 
-		var success = await _productService.CreateProductAsync(dto);
+        var success = await _productService.CreateProductAsync(dto, _pickedImage); // On passe le dto et l'image sélectionnée
         if (success)
         {
             ShowStatus("Produit ajouté !", isError: false);
@@ -102,17 +129,37 @@ public partial class AdminProductsPage : ContentPage
 
             if (stockStr is null) return;
 
+			FileResult? newImage = null;
+			bool changeImage = await DisplayAlert(
+				"Image",
+				"Voulez vous changer l'image du produit?",
+				"Oui", "Non");
+
+			if (changeImage)
+			{
+                // Si l'utilisateur veut changer l'image, on ouvre le sélecteur d'image
+                var picked = await MediaPicker.PickPhotoAsync(new MediaPickerOptions
+				{
+					Title = "Nouvelle image"
+				});
+				if (picked != null) newImage = picked; // Stocke la nouvelle image sélectionnée
+            }
+
 			// On construit le dto avec les nouvelle valeurs
 			var dto = new ProductDto
 			{
 				Name = name.Trim(),
 				Description = description.Trim(),
-				Price = decimal.TryParse(priceStr, out var price) ? price : product.Price,
+				// Gère , ou . pour le prix
+				Price = decimal.TryParse(
+                    priceStr,
+					System.Globalization.NumberStyles.Any,
+					System.Globalization.CultureInfo.InvariantCulture, 
+					out var price) ? price : product.Price,
 				Stock = int.TryParse(stockStr, out var stock) ? stock : product.Stock,
-				ImageUrl = product.ImageUrl
 			};
 
-			var success = await _productService.UpdateProductAsync(productId, dto);
+			var success = await _productService.UpdateProductAsync(productId, dto, newImage);
 
             if (success)
             {
@@ -167,6 +214,8 @@ public partial class AdminProductsPage : ContentPage
         DescriptionEntry.Text = string.Empty;
         PriceEntry.Text = string.Empty;
         StockEntry.Text = string.Empty;
-        ImageUrlEntry.Text = string.Empty;
+		ImagePreview.IsVisible = false;
+		ImagePreview.Source = null;
+		_pickedImage = null;
     }
 }

@@ -21,7 +21,7 @@ public partial class ProfilePage : ContentPage
         base.OnAppearing();
 
         // on vérifie si l'utilisateur est connecté
-        var token = await SecureStorage.GetAsync("token");
+        var token = await _authService.GetTokenAsync();
         if (string.IsNullOrEmpty(token))
         {
             // si pas de token, on renvoie vers login

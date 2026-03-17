@@ -9,6 +9,10 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Force le systeme de culture pour l'entrée des prix
+System.Globalization.CultureInfo.DefaultThreadCurrentCulture =
+    System.Globalization.CultureInfo.InvariantCulture;
+
 // Add services to the container.
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -92,8 +96,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseStaticFiles(); // Pour servir les images uploadées depuis wwwroot
 app.UseHttpsRedirection();
-//Authentitfication avant Authorization !!!!
+// Authentitfication avant Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 

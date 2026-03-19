@@ -64,4 +64,12 @@ public partial class ProductsPage : ContentPage
         }
     }
 
+    private async void OnProductTapped(object sender, EventArgs e)
+    {
+        if (sender is Button btn && btn.CommandParameter is Models.Product product)
+        {
+            var detalPage = new ProductDetailPage(product);
+            await Navigation.PushAsync(detalPage);
+        }
+    }
 }

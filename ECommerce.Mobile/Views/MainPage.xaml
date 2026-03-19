@@ -3,11 +3,77 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ECommerce.Mobile.Views.MainPage"
              Title="MainPage">
-    <VerticalStackLayout Padding="30" Spacing="25">
-        <Label
-            x:Name="WelcomeLabel"
-            Text="Bienvenue !"
-            Style="{StaticResource Headline}"
-            TextColor="White" />
-    </VerticalStackLayout>
+    <ScrollView>
+        <VerticalStackLayout Padding="30,0,30,20" Spacing="25" BackgroundColor="White">
+            <Image Source="logo.png"
+               HeightRequest="250"/>
+            <Label Text="Les dernières nouveautées"
+               TextColor="#333"
+               FontSize="20"
+               FontAttributes="Bold"
+               HorizontalTextAlignment="Center"
+               />
+            <CollectionView x:Name="LatestProductsCollection" SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="0,0,0,12"
+                                BackgroundColor="White"
+                                StrokeThickness="1"
+                                Stroke="#e0e0e0"
+                                >
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12"/>
+                            </Border.StrokeShape>
+                            <Grid ColumnDefinitions="120,*"
+                                  Padding="10">
+                                <!--Image du produit-->
+                                <Image Grid.Column="0"
+                                       Source="{Binding ImageUrl}"
+                                       HeightRequest="100"
+                                       WidthRequest="100"
+                                       Aspect="AspectFill">
+                                    <Image.Clip>
+                                        <RoundRectangleGeometry CornerRadius="8" Rect="0,0,100,100"/>
+                                    </Image.Clip>
+                                </Image>
+                                
+                                <!--Info du produit-->
+                                <VerticalStackLayout Grid.Column="1"
+                                                     Padding="12,8"
+                                                     Spacing="6"
+                                                     VerticalOptions="Center">
+                                    <Label Text="{Binding Name}"
+                                           FontSize="15"
+                                           FontAttributes="Bold"
+                                           TextColor="#333"
+                                           LineBreakMode="TailTruncation"/>
+                                    <Label Text="{Binding Description}"
+                                           FontSize="12"
+                                           TextColor="#888"
+                                           MaxLines="2"
+                                           LineBreakMode="TailTruncation"/>
+                                    <Label FontSize="15"
+                                           FontAttributes="Bold"
+                                           TextColor="#e94560">
+                                        <Label.Text>
+                                            <Binding Path="Price" StringFormat="{}{0:F2} €"/>
+                                        </Label.Text>
+                                    </Label>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <Button Text="Voir tous les produits →"
+                    Clicked="OnSeeAllClicked"
+                    BackgroundColor="#e94560"
+                    TextColor="White"
+                    FontSize="15"
+                    FontAttributes="Bold"
+                    CornerRadius="30"
+                    HeightRequest="52"
+                    HorizontalOptions="Fill"/>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

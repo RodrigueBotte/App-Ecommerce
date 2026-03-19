@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ECommerce.Mobile.Views.ProductDetailPage"
+             Title="ProductDetailPage">
+    <ScrollView>
+        <VerticalStackLayout Spacing="16" Padding="20" BackgroundColor="White">
+            <Image Source="{Binding ImageUrl}"
+                   HeightRequest="400"
+                   WidthRequest="400"
+                   Aspect="AspectFill"
+                   BackgroundColor="AliceBlue"/>
+            <Label Text="{Binding Name}"
+                   FontSize="26"
+                   FontAttributes="Bold"
+                   TextColor="IndianRed"/>
+            <Label FontSize="14"
+                   TextColor="Gray">
+                <Label.Text>
+                    <Binding Path="Price" StringFormat="{}{0} €" />
+                </Label.Text>
+            </Label>
+            <Label FontSize="14"
+                   TextColor="Gray">
+                <Label.Text>
+                    <Binding Path="Stock" StringFormat="En stock : {0}" />
+                </Label.Text>
+            </Label>
+            <BoxView HeightRequest="1" BackgroundColor="LightGray"/>
+            <Label Text="Description"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   TextColor="#333"/>
+            <Label Text="{Binding Description}"
+                   FontSize="14"
+                   TextColor="Gray"
+                   LineBreakMode="WordWrap"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

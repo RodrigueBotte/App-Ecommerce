@@ -20,10 +20,8 @@ namespace ECommerce.Mobile
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
-            // AddSingleton sert à créer une instance unique de ProductService qui sera partagée dans toute l'application
-            // AddTransient crée une nouvelle instance de ProductsPage chaque fois qu'elle est demandée
-            // AddScoped crée une instance de UserService qui est partagée dans le contexte d'une portée spécifique, comme une session utilisateur ou une requête
-            // Cela permet de gérer efficacement les ressources et d'assurer que les pages sont réinitialisées à chaque utilisation, tandis que les services partagent des données et des états communs.
+            // AddSingleton sert à créer une instance unique de de la page en question qui sera partagée dans toute l'application
+            // AddTransient crée une nouvelle instance de la page en question à chaque fois qu'elle est demandée
             builder.Services.AddSingleton<ProductService>();
             builder.Services.AddTransient<ProductsPage>();
             builder.Services.AddSingleton<AuthService>();
@@ -33,6 +31,7 @@ namespace ECommerce.Mobile
             builder.Services.AddTransient<AdminProductsPage>();
             builder.Services.AddSingleton<UserService>();
             builder.Services.AddSingleton<ProfilePage>();
+            builder.Services.AddSingleton<ProductDetailPage>();
 
             return builder.Build();
         }

@@ -41,7 +41,7 @@
                         Padding="10"
                         Margin="2">
                     <VerticalStackLayout Spacing="8"
-                                         HeightRequest="300"
+                                         HeightRequest="350"
                                          HorizontalOptions="Fill">
 
                         <Image HeightRequest="180"
@@ -69,7 +69,12 @@
                                FontAttributes="Bold"
                                TextColor="Gray"
                                HorizontalOptions="End" />
-
+                        <Button Text="Voir le produit"
+                                BackgroundColor="IndianRed"
+                                TextColor="White"
+                                CornerRadius="8"
+                                CommandParameter="{Binding .}"
+                                Clicked="OnProductTapped" />
                     </VerticalStackLayout>
                 </Border>
             </DataTemplate>

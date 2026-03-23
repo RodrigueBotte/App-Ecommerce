@@ -51,8 +51,13 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// pour eviter un cycle de référence (éviter que deux objets se référencent mutuellement à l'infini)
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler =
+        System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -123,19 +128,19 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+//using (var scope = app.Services.CreateScope())
+//{
+//    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    if (!context.Products.Any())
-    {
-        context.Products.AddRange(
-            new Product {Name = "iPhone 16 Pro", Price = 1199.99m, Stock= 10},
-            new Product { Name = "MacBook Air M3", Price = 1299.99m, Stock = 5 }
-            );
-        context.SaveChanges();
-        Console.WriteLine("2 produits ajoutés !");
-    }
-}
+//    if (!context.Products.Any())
+//    {
+//        context.Products.AddRange(
+//            new Product {Name = "iPhone 16 Pro", Price = 1199.99m, Stock= 10},
+//            new Product { Name = "MacBook Air M3", Price = 1299.99m, Stock = 5 }
+//            );
+//        context.SaveChanges();
+//        Console.WriteLine("2 produits ajoutés !");
+//    }
+//}
 
 app.Run();

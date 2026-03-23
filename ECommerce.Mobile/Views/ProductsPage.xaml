@@ -5,10 +5,8 @@
              xmlns:local="clr-namespace:ECommerce.Mobile.Views"
              Title="Produits">
 
-    <!-- Plus de ScrollView, le CollectionView gère tout -->
     <CollectionView x:Name="ProductsCollectionView" Margin="10">
 
-        <!-- Les boutons passent dans le Header -->
         <CollectionView.Header>
             <HorizontalStackLayout Spacing="10" Padding="10">
                 <Button x:Name="RefreshButton"
@@ -41,8 +39,7 @@
                         Padding="10"
                         Margin="2">
                     <VerticalStackLayout Spacing="8"
-                                         HeightRequest="350"
-                                         HorizontalOptions="Fill">
+                                         HeightRequest="350">
 
                         <Image HeightRequest="180"
                                Aspect="AspectFill"

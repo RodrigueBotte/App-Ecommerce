@@ -26,7 +26,12 @@ namespace ECommerce.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
-            var products = await _context.Products.ToListAsync();
+            var products = await _context.Products
+                .Include(p => p.Publishers)
+                .Include(p => p.Authors)
+                .Include(p => p.Categories)
+                .Include(p => p.Themes)
+                .ToListAsync();
             return Ok(products);
         }
 

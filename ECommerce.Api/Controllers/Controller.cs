@@ -56,13 +56,26 @@ namespace ECommerce.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] ProductDto dto) // FormForm pour gérer l'upload d'image
         {
+            // on associe authors à un auteur déjà présent dans la bdd
+            var authors = await _context.Authors.Where(a => dto.AuthorIds.Contains(a.Id)).ToListAsync();
+            var categories = await _context.Categories.Where(c => dto.CategoryIds.Contains(c.Id)).ToListAsync();
+            var themes = await _context.Themes.Where(t=> dto.ThemeIds.Contains(t.Id)).ToListAsync();
+
             var product = new Product
             {
                 Name = dto.Name,
                 Description = dto.Description,
                 Price = dto.Price,
                 Stock = dto.Stock,
-                ImageUrl = await SaveImageAsync(dto.Image) ?? string.Empty 
+                ImageUrl = await SaveImageAsync(dto.Image) ?? string.Empty,
+                MinPlayers = dto.MinPlayers,
+                MaxPlayers = dto.MaxPlayers,
+                GameDuration = dto.GameDuration,
+                MinAge = dto.MinAge,
+                PublisherId = dto.PublisherId,
+                Authors = authors,
+                Categories = categories,
+                Themes = themes
             };
 
             _context.Products.Add(product);
@@ -78,7 +91,13 @@ namespace ECommerce.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id,[FromForm] ProductDto dto) // FormForm pour gérer l'upload d'image
         {
-            var product = await _context.Products.FindAsync(id);
+            //Include est nécessaire pour pouvoir modifier les many-to-many
+            var product = await _context.Products
+                .Include(p => p.Authors)
+                .Include(p => p.Categories)
+                .Include(p => p.Themes)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (product is null)
             {
                 return NotFound(new { message = $"Produit {id} introuvable" });
@@ -89,12 +108,22 @@ namespace ECommerce.Api.Controllers
             product.Description = dto.Description;
             product.Price = dto.Price;
             product.Stock = dto.Stock;
+            product.MinPlayers = dto.MinPlayers;
+            product.MaxPlayers = dto.MaxPlayers;
+            product.MinAge = dto.MinAge;
+            product.GameDuration = dto.GameDuration;
+            product.PublisherId = dto.PublisherId;
 
             if (dto.Image != null)
             {
                 DeleteImageIfExists(product.ImageUrl);
                 product.ImageUrl = await SaveImageAsync(dto.Image) ?? product.ImageUrl; // Si l'upload échoue, on garde l'ancienne image
             }
+
+            // remplacement complet des relations many-to-many
+            product.Authors = await _context.Authors.Where(a=> dto.AuthorIds.Contains(a.Id)).ToListAsync();
+            product.Categories = await _context.Categories.Where(c=> dto.CategoryIds.Contains(c.Id)).ToListAsync();
+            product.Themes = await _context.Themes.Where(t=> dto.ThemeIds.Contains(t.Id)).ToListAsync();
 
             await _context.SaveChangesAsync(); // Sauvegarde en bdd
 

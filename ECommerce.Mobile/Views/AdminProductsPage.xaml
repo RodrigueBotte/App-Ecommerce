@@ -6,99 +6,176 @@
              BackgroundColor="#f5f5f5">
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="16">
-            <Frame
-            BackgroundColor="White"
-            CornerRadius="12"
-            Padding="16">
+            <Frame BackgroundColor="White" CornerRadius="12" Padding="16">
                 <VerticalStackLayout Spacing="10">
-                    <Label 
-                    Text="Ajouter / Modifier un produit"
-                    FontSize="18"
-                    FontAttributes="Bold"
-                    VerticalOptions="Center" 
-                    HorizontalOptions="Center" />
-                    <Entry x:Name="NameEntry"
-                       Placeholder="Nom du produit"
-                       TextColor="#333"/>
-                    <Entry x:Name="DescriptionEntry"
-                       Placeholder="Description"
-                       TextColor="#333"/>
-                    <Entry x:Name="PriceEntry"
-                       Placeholder="Prix (ex: 19.99)"
-                       Keyboard="Numeric" 
-                       TextColor="#333"/>
-                    <Entry x:Name="StockEntry"
-                       Placeholder="Stock"
-                       Keyboard="Numeric" 
-                       TextColor="#333"/>
+
+                    <Label Text="Ajouter / Modifier un produit"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"/>
+
+                    <!-- Infos de base -->
+                    <Entry x:Name="NameEntry" Placeholder="Nom du produit" TextColor="#333"/>
+                    <Entry x:Name="DescriptionEntry" Placeholder="Description" TextColor="#333"/>
+                    <Entry x:Name="PriceEntry" Placeholder="Prix (ex: 19.99)" Keyboard="Numeric" TextColor="#333"/>
+                    <Entry x:Name="StockEntry" Placeholder="Stock" Keyboard="Numeric" TextColor="#333"/>
+
+                    <!-- Infos jeu -->
+                    <Label Text="Informations du jeu"
+                           FontSize="15"
+                           FontAttributes="Bold"
+                           TextColor="#333"
+                           Margin="0,8,0,0"/>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Entry Grid.Column="0"
+                               x:Name="MinPlayersEntry"
+                               Placeholder="Joueurs min"
+                               Keyboard="Numeric"
+                               TextColor="#333"/>
+                        <Entry Grid.Column="1"
+                               x:Name="MaxPlayersEntry"
+                               Placeholder="Joueurs max"
+                               Keyboard="Numeric"
+                               TextColor="#333"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Entry Grid.Column="0"
+                               x:Name="MinAgeEntry"
+                               Placeholder="Âge minimum"
+                               Keyboard="Numeric"
+                               TextColor="#333"/>
+                        <Entry Grid.Column="1"
+                               x:Name="GameDurationEntry"
+                               Placeholder="Durée (minutes)"
+                               Keyboard="Numeric"
+                               TextColor="#333"/>
+                    </Grid>
+
+                    <!-- Éditeur -->
+                    <Label Text="Éditeur"
+                           FontSize="14"
+                           TextColor="Gray"/>
+                    <Picker x:Name="PublisherPicker"
+                            Title="Sélectionner un éditeur"
+                            TextColor="Black"
+                            ItemDisplayBinding="{Binding Name}"/>
+
+                    <!-- Auteurs -->
+                    <Label Text="Auteurs (sélection multiple)"
+                           FontSize="14"
+                           TextColor="Gray"/>
+                    <CollectionView x:Name="AuthorsCollection"
+                                    SelectionMode="Multiple"
+                                    HeightRequest="120"
+                                    SelectionChanged="OnAuthorsSelectionChanged">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Label Text="{Binding Name}"
+                                       Padding="8,6"
+                                       TextColor="#333"/>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <!-- Catégories -->
+                    <Label Text="Catégories (sélection multiple)"
+                           FontSize="14"
+                           TextColor="Gray"/>
+                    <CollectionView x:Name="CategoriesCollection"
+                                    SelectionMode="Multiple"
+                                    HeightRequest="120"
+                                    SelectionChanged="OnCategoriesSelectionChanged">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Label Text="{Binding Name}"
+                                       Padding="8,6"
+                                       TextColor="#333"/>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <!-- Thèmes -->
+                    <Label Text="Thèmes (sélection multiple)"
+                           FontSize="14"
+                           TextColor="Gray"/>
+                    <CollectionView x:Name="ThemesCollection"
+                                    SelectionMode="Multiple"
+                                    HeightRequest="120"
+                                    SelectionChanged="OnThemesSelectionChanged">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Label Text="{Binding Name}"
+                                       Padding="8,6"
+                                       TextColor="#333"/>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <!-- Image -->
                     <Button Text="Choisir une image"
-                        BackgroundColor="#2196F3"
-                        TextColor="White"
-                        CornerRadius="8"
-                        Clicked="OnPickImageClicked" />
+                            BackgroundColor="#2196F3"
+                            TextColor="White"
+                            CornerRadius="8"
+                            Clicked="OnPickImageClicked"/>
                     <Image x:Name="ImagePreview"
                            HeightRequest="180"
                            Aspect="AspectFill"
-                           IsVisible="False" />
-                    <!--Bouton ajouter-->
-                    <Button Text="Ajouter le produit"
+                           IsVisible="False"/>
+
+                    <!-- Bouton ajouter -->
+                    <Button x:Name="AddButton"
+                            Text="Ajouter le produit"
                             BackgroundColor="#4CAF50"
                             TextColor="White"
                             CornerRadius="8"
-                            Clicked="OnAddProductClicked" />
-                    <!-- Message de retour (succès ou erreur) -->
+                            Clicked="OnAddProductClicked"/>
+
                     <Label x:Name="StatusLabel"
                            TextColor="#4CAF50"
                            IsVisible="False"
-                           HorizontalOptions="Center" />
+                           HorizontalOptions="Center"/>
 
                 </VerticalStackLayout>
             </Frame>
-            <Label Text="Produits existants"
-               FontSize="18"
-               FontAttributes="Bold" />
-            <!--CollectionView affiche la liste des produits avec le bouton supprimer-->
-            <CollectionView x:Name="ProductsCollection"
-                        SelectionMode="None">
+
+            <!-- Liste produits existants -->
+            <Label Text="Produits existants" FontSize="18" FontAttributes="Bold"/>
+            <CollectionView x:Name="ProductsCollection" SelectionMode="None">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame BackgroundColor="White"
-                           CornerRadius="10"
-                           Margin="0,4"
-                           Padding="12">
+                        <Frame BackgroundColor="White" CornerRadius="10" Margin="0,4" Padding="12">
                             <Grid ColumnDefinitions="*, auto, auto">
-                                <!--Info produit-->
                                 <VerticalStackLayout Grid.Column="0">
-                                    <Label Text="{Binding Name}"
-                                           FontAttributes="Bold" FontSize="15" TextColor="Gray" />
-                                    <Label Text="{Binding Price, StringFormat='{0:C}'}"
-                                           TextColor="#4CAF50" />
-                                    <Label Text="{Binding Stock, StringFormat='Stock : {0}'}"
-                                           TextColor="Gray" FontSize="12" />
+                                    <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="15" TextColor="Gray"/>
+                                    <Label Text="{Binding Price, StringFormat='{0:C}'}" TextColor="#4CAF50"/>
+                                    <Label Text="{Binding Stock, StringFormat='Stock : {0}'}" TextColor="Gray" FontSize="12"/>
+                                    <Label Text="{Binding Publisher.Name, StringFormat='Éditeur : {0}'}" TextColor="Gray" FontSize="12"/>
                                 </VerticalStackLayout>
-                                <!--Bouton supprimer et update-->
                                 <Button Grid.Column="1"
-                                    Text="Modifier"
-                                    BackgroundColor="#3AB05D"
-                                    TextColor="White"
-                                    CornerRadius="8"
-                                    WidthRequest="100"
-                                    CommandParameter="{Binding Id}"
-                                    Margin="0,0,8,0"
-                                    Clicked="OnUpdateProductClicked" />
+                                        Text="Modifier"
+                                        BackgroundColor="#3AB05D"
+                                        TextColor="White"
+                                        CornerRadius="8"
+                                        WidthRequest="100"
+                                        Margin="0,0,8,0"
+                                        CommandParameter="{Binding .}"
+                                        Clicked="OnUpdateProductClicked"/>
                                 <Button Grid.Column="2"
-                                    Text="Supprimer"
-                                    BackgroundColor="#FF5252"
-                                    TextColor="White"
-                                    CornerRadius="8"
-                                    WidthRequest="100"
-                                    CommandParameter="{Binding Id}"
-                                    Clicked="OnDeleteProductClicked" />
+                                        Text="Supprimer"
+                                        BackgroundColor="#FF5252"
+                                        TextColor="White"
+                                        CornerRadius="8"
+                                        WidthRequest="100"
+                                        CommandParameter="{Binding Id}"
+                                        Clicked="OnDeleteProductClicked"/>
                             </Grid>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

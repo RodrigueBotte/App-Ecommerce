@@ -32,13 +32,14 @@ public class ProductService
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
     }
 
+    // ------------------------------GET-------------------------------------------------
     // Get tous les produits depuis le backend
     public async Task<List<Product>> GetProductsAsync()
     {
         var response = await _httpClient.GetAsync("api/products");
         response.EnsureSuccessStatusCode();
 
-        var products = await response.Content.ReadFromJsonAsync<List<Product>>() ?? new List<Product>();
+        var products = await response.Content.ReadFromJsonAsync<List<Product>>() ?? [];
 
         foreach (var product in products)
         {
@@ -47,6 +48,35 @@ public class ProductService
         return products;
     }
 
+    public async Task<List<Publisher>> GetPublishersAsync()
+    {
+        var response = await _httpClient.GetAsync("api/publishers");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<List<Publisher>>() ?? [];
+    }
+
+    public async Task<List<Author>> GetAuthorsAsync()
+    {
+        var response = await _httpClient.GetAsync("api/authors");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<List<Author>>() ?? [];
+    }
+
+    public async Task<List<Category>> GetCategoriesAsync()
+    {
+        var response = await _httpClient.GetAsync("api/categories");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<List<Category>>() ?? [];
+    }
+
+    public async Task<List<Theme>> GetThemesAsync()
+    {
+        var response = await _httpClient.GetAsync("api/themes");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<List<Theme>>() ?? [];
+    }
+
+    // ------------------------------POST-------------------------------------------------
     // Post un nouveau produit avec Admin uniquement
     public async Task<bool> CreateProductAsync(ProductDto dto, FileResult? image = null)
     {
@@ -61,10 +91,15 @@ public class ProductService
             content.Add(new StringContent(dto.Description), "description");
             content.Add(new StringContent(dto.Price.ToString(System.Globalization.CultureInfo.InvariantCulture)), "price"); // InvariantCulture pour éviter les problèmes de format (ex: 19.99 vs 19,99)
             content.Add(new StringContent(dto.Stock.ToString()), "stock");
+            content.Add(new StringContent(dto.MinPlayers.ToString()), "minPlayers");
+            content.Add(new StringContent(dto.MaxPlayers.ToString()), "maxPlayers");
+            content.Add(new StringContent(dto.MinAge.ToString()), "minAge");
+            content.Add(new StringContent(dto.GameDuration.ToString()), "gameDuration");
+            content.Add(new StringContent(dto.PublisherId.ToString()), "publisherId");
 
-            await Shell.Current.DisplayAlert("Debug Service",
-                $"Prix dans le dto: {dto.Price}\nPrix envoyé: {dto.Price.ToString(System.Globalization.CultureInfo.InvariantCulture)}",
-                "OK");
+            foreach (var authorId in dto.AuthorIds) content.Add(new StringContent(authorId.ToString()), "authorId");
+            foreach (var categoryId in dto.CategoryIds) content.Add(new StringContent(categoryId.ToString()), "categoriesId");
+            foreach (var themeId in dto.ThemeIds) content.Add(new StringContent(themeId.ToString()), "themeIds");
 
             // Champs image(optionnel)
             if (image != null)
@@ -92,6 +127,7 @@ public class ProductService
         }
     }
 
+    // ------------------------------PUT-------------------------------------------------
     // Put pour update un produit existant avec Admin uniquement
     public async Task<bool> UpdateProductAsync(int id, ProductDto dto, FileResult? image = null)
     {
@@ -105,6 +141,15 @@ public class ProductService
             content.Add(new StringContent(dto.Description), "description");
             content.Add(new StringContent(dto.Price.ToString(System.Globalization.CultureInfo.InvariantCulture)), "price");
             content.Add(new StringContent(dto.Stock.ToString()), "stock");
+            content.Add(new StringContent(dto.MinPlayers.ToString()), "minPlayers");
+            content.Add(new StringContent(dto.MaxPlayers.ToString()), "maxPlayers");
+            content.Add(new StringContent(dto.MinAge.ToString()), "minAge");
+            content.Add(new StringContent(dto.GameDuration.ToString()), "gameDuration");
+            content.Add(new StringContent(dto.PublisherId.ToString()), "publisherId");
+
+            foreach (var authorId in dto.AuthorIds)content.Add(new StringContent(authorId.ToString()), "authorIds");
+            foreach (var categoryId in dto.CategoryIds) content.Add(new StringContent(categoryId.ToString()), "categoryIds");
+            foreach (var themeId in dto.ThemeIds) content.Add(new StringContent(themeId.ToString()), "themeIds");
 
             if (image != null)
             {
@@ -126,6 +171,7 @@ public class ProductService
         }
     }
 
+    // ------------------------------DELETE-------------------------------------------------
     // Delete un produit avec Admin uniquement
     public async Task<bool> DeleteProductAsync(int id)
     {

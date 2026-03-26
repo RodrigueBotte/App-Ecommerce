@@ -2,31 +2,141 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ECommerce.Mobile.Views.ProductDetailPage"
-             Title="ProductDetailPage">
+             Title="{Binding Name}">
     <ScrollView>
         <VerticalStackLayout Spacing="16" Padding="20" BackgroundColor="White">
+
+            <!-- Image -->
             <Image Source="{Binding ImageUrl}"
-                   HeightRequest="400"
-                   WidthRequest="400"
+                   HeightRequest="300"
+                   WidthRequest="300"
                    Aspect="AspectFill"
                    BackgroundColor="AliceBlue"/>
+
+            <!-- Nom + Prix -->
             <Label Text="{Binding Name}"
                    FontSize="26"
                    FontAttributes="Bold"
                    TextColor="IndianRed"/>
-            <Label FontSize="14"
-                   TextColor="Gray">
+
+            <Label FontSize="22"
+                   FontAttributes="Bold"
+                   TextColor="IndianRed">
                 <Label.Text>
-                    <Binding Path="Price" StringFormat="{}{0} €" />
+                    <Binding Path="Price" StringFormat="{}{0:F2} €"/>
                 </Label.Text>
             </Label>
-            <Label FontSize="14"
-                   TextColor="Gray">
+
+            <!-- Stock -->
+            <Label FontSize="13" TextColor="Gray">
                 <Label.Text>
-                    <Binding Path="Stock" StringFormat="En stock : {0}" />
+                    <Binding Path="Stock" StringFormat="En stock : {0}"/>
                 </Label.Text>
             </Label>
+
             <BoxView HeightRequest="1" BackgroundColor="LightGray"/>
+
+            <!-- Infos jeu -->
+            <Label Text="Informations"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   TextColor="#333"/>
+
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="8">
+
+                <!-- Éditeur -->
+                <Label Grid.Row="0" Grid.Column="0"
+                       Text="Éditeur"
+                       FontSize="13"
+                       TextColor="Gray"/>
+                <Label Grid.Row="0" Grid.Column="1"
+                       Text="{Binding Publishers.Name}"
+                       FontSize="13"
+                       FontAttributes="Bold"
+                       TextColor="#333"/>
+
+                <!-- Joueurs -->
+                <Label Grid.Row="1" Grid.Column="0"
+                       Text="Joueurs"
+                       FontSize="13"
+                       TextColor="Gray"/>
+                <Label Grid.Row="1" Grid.Column="1"
+                       FontSize="13"
+                       FontAttributes="Bold"
+                       TextColor="#333">
+                    <Label.Text>
+                        <MultiBinding StringFormat="{}{0} - {1} joueurs">
+                            <Binding Path="MinPlayers"/>
+                            <Binding Path="MaxPlayers"/>
+                        </MultiBinding>
+                    </Label.Text>
+                </Label>
+
+                <!-- Âge minimum -->
+                <Label Grid.Row="2" Grid.Column="0"
+                       Text="Âge minimum"
+                       FontSize="13"
+                       TextColor="Gray"/>
+                <Label Grid.Row="2" Grid.Column="1"
+                       FontSize="13"
+                       FontAttributes="Bold"
+                       TextColor="#333">
+                    <Label.Text>
+                        <Binding Path="MinAge" StringFormat="{}{0} ans"/>
+                    </Label.Text>
+                </Label>
+
+                <!-- Durée -->
+                <Label Grid.Row="3" Grid.Column="0"
+                       Text="Durée"
+                       FontSize="13"
+                       TextColor="Gray"/>
+                <Label Grid.Row="3" Grid.Column="1"
+                       FontSize="13"
+                       FontAttributes="Bold"
+                       TextColor="#333">
+                    <Label.Text>
+                        <Binding Path="GameDuration" StringFormat="{}{0} min"/>
+                    </Label.Text>
+                </Label>
+
+            </Grid>
+
+            <BoxView HeightRequest="1" BackgroundColor="LightGray"/>
+
+            <!-- Catégories -->
+            <Label Text="Catégories"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   TextColor="#333"/>
+            <FlexLayout x:Name="CategoriesLayout"
+                        Wrap="Wrap"
+                        Direction="Row"
+                        JustifyContent="Start"/>
+
+            <!-- Thèmes -->
+            <Label Text="Thèmes"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   TextColor="#333"/>
+            <FlexLayout x:Name="ThemesLayout"
+                        Wrap="Wrap"
+                        Direction="Row"
+                        JustifyContent="Start"/>
+
+            <!-- Auteurs -->
+            <Label Text="Auteurs"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   TextColor="#333"/>
+            <FlexLayout x:Name="AuthorsLayout"
+                        Wrap="Wrap"
+                        Direction="Row"
+                        JustifyContent="Start"/>
+
+            <BoxView HeightRequest="1" BackgroundColor="LightGray"/>
+
+            <!-- Description -->
             <Label Text="Description"
                    FontSize="16"
                    FontAttributes="Bold"
@@ -35,6 +145,7 @@
                    FontSize="14"
                    TextColor="Gray"
                    LineBreakMode="WordWrap"/>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
